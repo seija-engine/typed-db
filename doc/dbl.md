@@ -1,31 +1,37 @@
-```haskell
---data define
-data Info = {
+```Scala
+class Info {
     name:String,
-    desc:String,
+    desc:String
 }
 
---enum define
-data Quality  = White | Green | Blue | Red
+enum Quality {
+    case White,
+    case Green,
+    case Blue,
+    case Red
+}
 
---sum type
-data TaskInfo = KillUnit { unitId:Long } | MoveToTarget { px:Int,py:Int }
+enum TaskInfo {
+    case KillUnit(
+        info:KillUnitInfo
+    )
+    case MoveToTarget(
+        info:MoveToTargetInfo
+    )
+}
 
---type var and meta info
-[Info {name = "通用",desc = "" }]
-data CommonInfo a = {
-    [Info { name = "ID",desc = "唯一ID用于索引" }]
+@Info("通用","")
+class CommonInfo[T] {
     Id:Long,
     name:String,
-    value:a,
+    value:T
 }
 
---type alias
-data ItemDesc = {
+class ItemDesc {
     icon:String,
     quality:Quality
 }
 
-type ItemInfo = CommonInfo ItemDesc
-type ItemTable = List ItemInfo
+type ItemInfo = CommonInfo[ItemDesc]
+type ItemTable = Array[ItemInfo]
 ```

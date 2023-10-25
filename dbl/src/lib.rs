@@ -1,14 +1,66 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+mod parser;
+use std::sync::Arc;
+use smol_str::SmolStr;
+
+pub enum BuiltinType {
+    String,
+    Byte,
+    Char,
+    Int,
+    Float,
+    Array
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+type ArcType = Arc<Type>;
+pub enum Type {
+    Builtin(BuiltinType),
+    Class(ClassType),
+    Enum(EnumType),
+    Generic(GenericType),
+    TypeIdent(SmolStr),
+    Meta(MetaValue)
+}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub struct ClassType {
+    pub name:SmolStr,
+    pub field_list:Vec<FieldInfo>
+}
+
+pub struct FieldInfo {
+  pub name:SmolStr,
+  pub typ:ArcType
+}
+
+pub struct EnumType {
+    pub name:SmolStr,
+    list:Vec<EnumItem>
+}
+
+pub struct EnumItem {
+    pub name:SmolStr,
+    field_list:Vec<FieldInfo>
+}
+
+pub struct GenericType {
+    typ:ArcType
+}
+
+pub enum MetaValue {
+    Int(i32),
+    String(String),
+    Bool(bool),
+    Array(ArcType,Vec<MetaValue>),
+    Class(MetaClass),
+    Enum(MetaEnum)
+}
+
+pub struct MetaClass {
+    typ:ArcType,
+    props:Vec<MetaValue>
+}
+
+pub struct MetaEnum {
+    typ:ArcType,
+    tag:u32,
+    props:Vec<MetaValue>   
 }
